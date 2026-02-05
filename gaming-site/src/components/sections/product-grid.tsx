@@ -22,9 +22,9 @@ interface Product {
 const mockProducts: Product[] = [
   {
     id: '1',
-    name: 'Gaming Mechanical Keyboard',
+    name: 'Teclado Mecânico Gamer RGB',
     price: 149.99,
-    image: '/assets/products/keyboard-1.jpg',
+    image: '/assets/products/keyboard-1.jpeg',
     category: 'Keyboards',
     rating: 4.8,
     reviews: 324,
@@ -33,9 +33,9 @@ const mockProducts: Product[] = [
   },
   {
     id: '2',
-    name: 'Wireless Gaming Mouse',
+    name: 'Mouse Gamer Wireless Pro',
     price: 89.99,
-    image: '/assets/products/mouse-1.jpg',
+    image: '/assets/products/mouse-1.webp',
     category: 'Mice',
     rating: 4.6,
     reviews: 198,
@@ -44,7 +44,7 @@ const mockProducts: Product[] = [
   },
   {
     id: '3',
-    name: 'Gaming Headset Pro',
+    name: 'Headset Gamer 7.1 Surround',
     price: 199.99,
     image: '/assets/products/headset-1.jpg',
     category: 'Audio',
@@ -55,10 +55,10 @@ const mockProducts: Product[] = [
   },
   {
     id: '4',
-    name: 'Gaming Controller Elite',
-    price: 179.99,
-    image: '/assets/products/controller-1.jpg',
-    category: 'Controllers',
+    name: 'Teclado Gamer Mecânico Pro',
+    price: 199.99,
+    image: '/assets/products/keyboard-2.jpg',
+    category: 'Keyboards',
     rating: 4.7,
     reviews: 267,
     featured: false,
@@ -66,29 +66,40 @@ const mockProducts: Product[] = [
   },
   {
     id: '5',
-    name: 'Gaming Monitor 27"',
-    price: 399.99,
-    image: '/assets/products/monitor-1.jpg',
-    category: 'Monitors',
-    rating: 4.8,
+    name: 'Mouse Gamer RGB Wireless',
+    price: 79.99,
+    image: '/assets/products/mouse-2.webp',
+    category: 'Mice',
+    rating: 4.5,
     reviews: 189,
-    featured: true,
-    stock: 6,
+    featured: false,
+    stock: 18,
   },
   {
     id: '6',
-    name: 'Gaming Chair Pro',
+    name: 'Kit Gamer Completo',
     price: 299.99,
-    image: '/assets/products/chair-1.jpg',
-    category: 'Furniture',
-    rating: 4.5,
+    image: '/assets/products/kit-gamer-1.jpg',
+    category: 'Kits',
+    rating: 4.8,
     reviews: 134,
-    featured: false,
+    featured: true,
     stock: 4,
+  },
+  {
+    id: '7',
+    name: 'Setup Gamer Completo',
+    price: 899.99,
+    image: '/assets/products/game-setup-1.webp',
+    category: 'Setups',
+    rating: 4.9,
+    reviews: 89,
+    featured: true,
+    stock: 2,
   },
 ];
 
-const categories = ['All', 'Keyboards', 'Mice', 'Audio', 'Controllers', 'Monitors', 'Furniture'];
+const categories = ['All', 'Keyboards', 'Mice', 'Audio', 'Kits', 'Setups'];
 
 export function ProductGrid() {
   const [products, setProducts] = useState<Product[]>(mockProducts);

@@ -32,12 +32,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     if (token && userData) {
       try {
-        setUser(JSON.parse(userData));
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
+        console.log('✅ Usuário restaurado do localStorage:', parsedUser.email);
       } catch (error) {
-        console.error('Error parsing user data:', error);
+        console.error('❌ Erro ao restaurar usuário:', error);
         localStorage.removeItem('auth_token');
         localStorage.removeItem('user_data');
       }
+    } else {
+      console.log('ℹ️ Nenhuma sessão encontrada');
     }
     
     setLoading(false);
@@ -65,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('user_data', JSON.stringify(data.user));
       
       setUser(data.user);
+      console.log('✅ Login realizado com sucesso:', data.user.email);
     } catch (error) {
       // For demo purposes, create a mock user
       const mockUser: User = {
@@ -75,10 +80,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         role: email === 'admin@gaming-site.com' ? 'ADMIN' : 'USER',
       };
       
-      localStorage.setItem('auth_token', 'mock_token');
+      const mockToken = 'mock_token_' + Date.now();
+      
+      localStorage.setItem('auth_token', mockToken);
       localStorage.setItem('user_data', JSON.stringify(mockUser));
       
       setUser(mockUser);
+      console.log('✅ Login demo realizado:', mockUser.email, 'Role:', mockUser.role);
     }
   };
 
@@ -125,6 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user_data');
     setUser(null);
+    console.log('✅ Logout realizado com sucesso');
   };
 
   const value = {
@@ -134,6 +143,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     logout,
     loading,
   };
+
+  // Show loading spinner while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-dark-950 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-r from-primary-500 to-gaming-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <span className="text-white font-gaming font-bold text-2xl">GP</span>
+          </div>
+          <div className="loading-spinner mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Verificando sessão...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <AuthContext.Provider value={value}>

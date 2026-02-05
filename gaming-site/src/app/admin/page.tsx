@@ -35,7 +35,7 @@ interface TodoItem {
 }
 
 export default function AdminDashboard() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [stats, setStats] = useState<DashboardStats>({
     totalUsers: 0,
@@ -54,11 +54,16 @@ export default function AdminDashboard() {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
+    if (authLoading) return; // Wait for auth check to complete
+    
     if (!user || user.role !== 'ADMIN') {
+      console.log('❌ Acesso negado ao admin dashboard');
       router.push('/auth/login');
       return;
     }
 
+    console.log('✅ Admin autenticado:', user.email);
+    
     // Fetch dashboard stats (mock data for demo)
     setStats({
       totalUsers: 1247,
@@ -76,7 +81,7 @@ export default function AdminDashboard() {
         { name: 'Gaming Headset Pro', sales: 32 },
       ],
     });
-  }, [user, router]);
+  }, [user, authLoading, router]);
 
   const addTodo = () => {
     if (newTodo.trim()) {
@@ -100,6 +105,20 @@ export default function AdminDashboard() {
   const deleteTodo = (id: string) => {
     setTodos(todos.filter(todo => todo.id !== id));
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-dark-950 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-r from-primary-500 to-gaming-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <span className="text-white font-gaming font-bold text-2xl">GP</span>
+          </div>
+          <div className="loading-spinner mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Carregando dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!user || user.role !== 'ADMIN') {
     return null;
@@ -137,12 +156,12 @@ export default function AdminDashboard() {
   ];
 
   const menuItems = [
-    { href: '/admin/users', label: 'Users', icon: Users, description: 'Manage users and admins' },
-    { href: '/admin/products', label: 'Products', icon: Package, description: 'Add/edit gaming products' },
-    { href: '/admin/orders', label: 'Orders', icon: ShoppingCart, description: 'View and manage orders' },
-    { href: '/admin/chat', label: 'Chat', icon: MessageSquare, description: 'Live chat sessions' },
-    { href: '/admin/content', label: 'Content', icon: Settings, description: 'Edit site content' },
-    { href: '/admin/media', label: 'Media', icon: Eye, description: 'Manage images/videos' },
+    { href: '/admin/users', label: 'Usuários', icon: Users, description: 'Gerenciar usuários e permissões' },
+    { href: '/admin/products', label: 'Produtos', icon: Package, description: 'Adicionar/editar produtos gaming' },
+    { href: '/admin/orders', label: 'Pedidos', icon: ShoppingCart, description: 'Visualizar e gerenciar pedidos' },
+    { href: '/admin/chat', label: 'Chat', icon: MessageSquare, description: 'Conversas do chatbot (Em breve)' },
+    { href: '/admin/content', label: 'Conteúdo', icon: Settings, description: 'Editar conteúdo do site (Em breve)' },
+    { href: '/admin/media', label: 'Mídia', icon: Eye, description: 'Gerenciar imagens/vídeos (Em breve)' },
   ];
 
   return (
