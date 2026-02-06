@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/cart-context';
 import { useAuth } from '@/contexts/auth-context';
 import { Navbar } from '@/components/layout/navbar';
@@ -13,6 +14,7 @@ import toast from 'react-hot-toast';
 export default function CartPage() {
   const { items, updateQuantity, removeItem, total, clearCart } = useCart();
   const { user } = useAuth();
+  const router = useRouter();
 
   const handleQuantityChange = (id: string, newQuantity: number) => {
     if (newQuantity < 1) return;
@@ -26,11 +28,12 @@ export default function CartPage() {
 
   const handleCheckout = () => {
     if (!user) {
-      toast.error('Please login to proceed with checkout');
+      toast.error('Faça login para continuar com a compra');
+      router.push('/auth/login');
       return;
     }
-    // Redirect to checkout or handle checkout logic
-    toast.success('Proceeding to checkout...');
+    // Redirect to checkout
+    router.push('/checkout');
   };
 
   if (items.length === 0) {

@@ -16,6 +16,8 @@ model User {
   password  String
   firstName String?
   lastName  String?
+  cpf       String?  @unique
+  phone     String?
   role      String   @default("USER") // USER or ADMIN
   avatar    String?
   createdAt DateTime @default(now())
@@ -26,6 +28,7 @@ model User {
   cartItems CartItem[]
   chats     Chat[]
   tickets   Ticket[]
+  addresses Address[]
 
   @@map("users")
 }
@@ -56,13 +59,33 @@ model Order {
   id        String   @id @default(cuid())
   userId    String
   total     Float
+  subtotal  Float
+  tax       Float    @default(0)
+  shipping  Float    @default(0)
   status    String   @default("PENDING") // PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+  
+  // Customer Data
+  customerName  String
+  customerEmail String
+  customerCPF   String
+  customerPhone String?
+  
+  // Payment Data
+  paymentMethod String  // PIX, CREDIT_CARD, DEBIT_CARD, BOLETO
+  paymentStatus String  @default("PENDING") // PENDING, PAID, FAILED, REFUNDED
+  paymentId     String? // ID do pagamento no gateway
+  
+  // Address Data
+  addressId     String?
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relations
-  user  User        @relation(fields: [userId], references: [id])
-  items OrderItem[]
+  user    User        @relation(fields: [userId], references: [id])
+  items   OrderItem[]
+  address Address?    @relation(fields: [addressId], references: [id])
+  payment Payment?
 
   @@map("orders")
 }
@@ -161,4 +184,60 @@ model SiteContent {
   updatedAt DateTime @updatedAt
 
   @@map("site_content")
+}
+
+model Address {
+  id         String @id @default(cuid())
+  userId     String
+  street     String
+  number     String
+  complement String?
+  neighborhood String
+  city       String
+  state      String
+  zipCode    String
+  country    String @default("Brasil")
+  isDefault  Boolean @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  user   User    @relation(fields: [userId], references: [id])
+  orders Order[]
+
+  @@map("addresses")
+}
+
+model Payment {
+  id            String   @id @default(cuid())
+  orderId       String   @unique
+  method        String   // PIX, CREDIT_CARD, DEBIT_CARD, BOLETO
+  status        String   @default("PENDING") // PENDING, PAID, FAILED, REFUNDED
+  amount        Float
+  
+  // Card Data (encrypted)
+  cardLast4     String?
+  cardBrand     String?
+  cardHolder    String?
+  
+  // PIX Data
+  pixKey        String?
+  pixQRCode     String?
+  
+  // Boleto Data
+  boletoCode    String?
+  boletoUrl     String?
+  
+  // Gateway Data
+  gatewayId     String?
+  gatewayResponse String? // JSON string
+  
+  paidAt        DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@map("payments")
 }
